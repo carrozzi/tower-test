@@ -19,3 +19,5 @@
       user: root
       passwd: Gestalt7
 
+  - name: Print commit comment
+    debug: msg="{{ mycomment }}"
