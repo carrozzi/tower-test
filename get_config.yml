@@ -15,8 +15,8 @@
        host: "{{ inventory_hostname }}"
        rpc: get-config
        dest: "{{ inventory_hostname }}.conf"
-       user: root
-       passwd: Gestalt7
+       username: root
+       password: Gestalt7
 
   - name: Print commit comment
     debug: msg="{{ mycomment }}"
