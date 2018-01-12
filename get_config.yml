@@ -11,7 +11,7 @@
     wait_for: host={{ inventory_hostname }} port=830 timeout=5
 
   - name: Get Junos Configuration
-    junos_rpc:
+    juniper_junos_rpc:
        host: "{{ inventory_hostname }}"
        rpc: get-config
        dest: "{{ inventory_hostname }}.conf"
