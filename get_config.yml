@@ -12,7 +12,7 @@
 
   - name: Get Junos Configuration
     junos_rpc:
-       host: {{ inventory_hostname }}
+       host: "{{ inventory_hostname }}"
        rpc: get-config
        dest: "{{ inventory_hostname }}.conf"
        user: root
