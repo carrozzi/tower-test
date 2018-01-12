@@ -8,13 +8,13 @@
 
   tasks:
   - name: Checking NETCONF connectivity
-    wait_for: host={{ junos_device }} port=830 timeout=5
+    wait_for: host={{ inventory_hostname }} port=830 timeout=5
 
   - name: Get Junos Configuration
     junos_get_config:
-      host: "{{ junos_device }}"
+      host: "{{ inventory_hostname }}"
       logfile: get_config.log
-      dest: "{{ junos_device }}.xml"
+      dest: "{{ inventory_hostname }}.xml"
       format: xml
       user: root
       passwd: Gestalt7
