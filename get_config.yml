@@ -18,7 +18,6 @@
       check: false
       host: "{{ inventory_hostname }}"
       dest: "{{ inventory_hostname }}.xml"
-      format: xml
       user: root
       passwd: Gestalt7
 
