@@ -11,9 +11,12 @@
     wait_for: host={{ inventory_hostname }} port=830 timeout=5
 
   - name: Get Junos Configuration
-    junos_get_config:
+    juniper_junos_config:
+      retrieve: 'committed'
+      diff: false
+      commit: false
+      check: false
       host: "{{ inventory_hostname }}"
-      logfile: get_config.log
       dest: "{{ inventory_hostname }}.xml"
       format: xml
       user: root
