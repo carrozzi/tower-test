@@ -11,15 +11,12 @@
     wait_for: host={{ inventory_hostname }} port=830 timeout=5
 
   - name: Get Junos Configuration
-    juniper_junos_config:
-      retrieve: 'committed'
-      diff: false
-      commit: false
-      check: false
-      host: "{{ inventory_hostname }}"
-      dest: "{{ inventory_hostname }}.xml"
-      user: root
-      passwd: Gestalt7
+    junos_rpc:
+       host={{ inventory_hostname }}
+       rpc=get-config
+       dest= "{{ inventory_hostname }}.conf"
+       user: root
+       passwd: Gestalt7
 
   - name: Print commit comment
     debug: msg="{{ mycomment }}"
