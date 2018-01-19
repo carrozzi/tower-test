@@ -23,6 +23,22 @@
        dest: "/root/config_backup/{{ inventory_hostname }}/config"
        username: root
        password: Gestalt7
+  - name: Add file to git
+    command: /usr/bin/git add "{{ inventory_hostname }}/config"
+    args:
+      chdir: /root/config_backup
+      creates: "/root/config_backup/{{ inventory_hostname }}/config"
+
+  - name: Commit change
+    command: /usr/bin/git commit -m "{{ mymessage }}"
+    args:
+      chdir: /root/config_backup
+
+  - name: Push config file
+    command: /usr/bin/git push -u origin
+    args:
+      chdir: /root/config_backup
+
 
   - name: Print commit comment
     debug: msg="{{ mycomment }}"
