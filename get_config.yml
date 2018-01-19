@@ -30,7 +30,7 @@
       creates: "/root/config_backup/{{ inventory_hostname }}/config"
 
   - name: Commit change
-    command: /usr/bin/git commit -m "{{ mymessage }}"
+    command: /usr/bin/git commit -m "{{ mycomment }}"
     args:
       chdir: /root/config_backup
 
