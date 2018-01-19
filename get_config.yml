@@ -35,7 +35,7 @@
       chdir: /root/config_backup
 
   - name: Push config file
-    command: /usr/bin/git push -u origin
+    command: /usr/bin/git push -u origin master
     args:
       chdir: /root/config_backup
 
