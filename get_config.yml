@@ -27,7 +27,6 @@
     command: /usr/bin/git add "{{ inventory_hostname }}/config"
     args:
       chdir: /root/config_backup
-      creates: "/root/config_backup/{{ inventory_hostname }}/config"
 
   - name: Commit change
     command: /usr/bin/git commit -m "{{ mycomment }}"
