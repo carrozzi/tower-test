@@ -7,6 +7,12 @@
   gather_facts: no
 
   tasks:
+  - file:
+      path: "/root/config_backup/{{ inventory_hostname }}"
+      state: directory
+      mode: 0755
+
+
   - name: Checking NETCONF connectivity
     wait_for: host={{ inventory_hostname }} port=830 timeout=5
 
@@ -14,7 +20,7 @@
     juniper_junos_rpc:
        host: "{{ inventory_hostname }}"
        rpc: get-config
-       dest: "{{ inventory_hostname }}.conf"
+       dest: "/root/config_backup/{{ inventory_hostname }}/config"
        username: root
        password: Gestalt7
 
