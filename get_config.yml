@@ -21,7 +21,7 @@
        host: "{{ inventory_hostname }}"
        rpc: get-config
        dest: "/root/config_backup/{{ junos_device }}/config"
-       username: carrozzi
+       username: root
   - name: Add file to git
     command: /usr/bin/git add "{{ junos_device }}/config"
     args:
