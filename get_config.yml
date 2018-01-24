@@ -22,6 +22,7 @@
        rpc: get-config
        dest: "/root/config_backup/{{ junos_device }}/config"
        username: root
+       ssh_private_key_file: "~/.ssh/id_rsa"
   - name: Add file to git
     command: /usr/bin/git add "{{ junos_device }}/config"
     args:
