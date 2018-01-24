@@ -17,12 +17,12 @@
     wait_for: host={{ inventory_hostname }} port=830 timeout=5
 
   - name: Get Junos Configuration
-    juniper_junos_rpc:
+    juniper_junos_config:
        host: "{{ inventory_hostname }}"
-       rpc: get-config
+       retrieve: "committed"
        dest: "/root/config_backup/{{ junos_device }}/config"
        username: root
-       ssh_private_key_file: "~/.ssh/id_rsa"
+       passwd: Gestalt7
   - name: Add file to git
     command: /usr/bin/git add "{{ junos_device }}/config"
     args:
