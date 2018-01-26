@@ -1,0 +1,106 @@
+version 1.1;
+ns junos = "http://xml.juniper.net/junos/*/junos";
+ns xnm = "http://xml.juniper.net/xnm/1.1/xnm";
+ns jcs = "http://xml.juniper.net/junos/commit-scripts/1.0";
+ns curl extension = "http://xml.libslax.org/curl";
+
+import "../import/junos.xsl";
+
+var $event-definition = {
+   <event-options> {
+     <policy> {
+       <name> "disable-evpn-access-ports";
+       <events> "RPD_BGP_NEIGHBOR_STATE_CHANGED";
+       <attributes-match> {
+          <from-event-attribute> "rpd_bgp_neighbor_state_changed.old-state";
+          <condition> "matches";
+          <to-event-attribute-value> "Established";
+          }
+       <then> {
+          <event-script> {
+             <name> "evpn-port-fix-awx.slax";
+          }
+       }
+     }
+     <policy> {
+       <name> "reenable-evpn-access-ports";
+       <events> "RPD_BGP_NEIGHBOR_STATE_CHANGED";
+       <attributes-match> {
+          <from-event-attribute> "rpd_bgp_neighbor_state_changed.new-state";
+          <condition> "matches";
+          <to-event-attribute-value> "Established";
+          }
+       <then> {
+          <event-script> {
+             <name> "evpn-port-fix-awx.slax";
+          }
+       }
+     }
+   }
+}
+param $launchurl = "{{ callback_url }}";
+
+
+match / {
+    <event-script-results> {
+        var $conn=jcs:open();
+        var $curl = curl:open();
+
+        var $bgp-rpc=<get-bgp-neighbor-information> ;
+        
+        var $bgp-info=jcs:execute($conn,$bgp-rpc);
+
+        var $old-state = event-script-input/trigger-event//attribute[name == "old-state"]/value;
+        var $new-state = event-script-input/trigger-event//attribute[name == "new-state"]/value;
+        var $up-peer-count = count($bgp-info//bgp-peer[(peer-state=="Established") && (contains(bgp-option-information/address-families,"evpn"))]);
+        var $scriptcomment = "Disabled by evpn-port-fix script";
+
+         /* if BGP to this peer used to be Established and now is not AND all evpn(overlay) peers show down, then disable all user links */
+        if(($old-state == "Established") && ($up-peer-count == 0)) { 
+     var $keypart = '{"host_config_key":"{{ host_config_key }}",';
+      var $firstpart = '"extra_vars": {';
+      var $commentpart = ",\"action\":\"" _ "disable" _ "\"";
+	  var $lastpart = '}}';
+	
+      var $var-json = $keypart _ $firstpart _ $commentpart _ $lastpart;
+
+      var $launch-params := {
+        <url> $launchurl;
+        <method> "post";
+        <format> "json";
+        <content-type> "application/json";  
+        <contents> $var-json;
+     }
+     var $launch-pb = curl:perform($curl, $launch-params);
+
+     	}
+     	/* Else, if this peer connection is now Established and at least one evpn(overlay) peer shows as up, bring the user ports back up */
+     	else if(($new-state == "Established") && ($up-peer-count > 0)) {
+           var $keypart = '{"host_config_key":"9a1c184e9c1df513fedd1de627b2bc7f",';
+           var $firstpart = '"extra_vars": {';
+           var $commentpart = "\"action\":\"" _ "enable" _ "\"";
+	       var $lastpart = '}}';
+	
+      var $var-json = $keypart _ $firstpart _ $commentpart _ $lastpart;
+
+     	var $launch-params := {
+           <url> $launchurl;
+           <method> "post";
+           <format> "json";
+           <content-type> "application/json";  
+           <contents> $var-json;
+          }
+          var $launch-pb = curl:perform($curl, $launch-params);
+
+     	}
+        else {
+     	expr jcs:syslog("user.warn","TMC: doing nothing");  
+         var $change = {};
+        }
+        
+      var $close-res=jcs:close($conn);
+      expr curl:close($curl);
+
+
+  }
+}

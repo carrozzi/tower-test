@@ -1,0 +1,13 @@
+---
+- name: try templating event script
+  hosts: localhost
+  connection: local
+  vars:
+    callback_url: http://10.10.10.72:8880/api/v2/job_templates/7/callback/
+    host_config_key: 1233456789abcd
+
+  tasks:
+  - name: template-ize event script
+    template:
+      src: escript.j2
+      dest: /Users/carrozzi/dev/slax/evpn-port-fix-awx.slax
