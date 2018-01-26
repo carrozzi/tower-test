@@ -10,4 +10,4 @@
   - name: template-ize event script
     template:
       src: escript.j2
-      dest: /Users/carrozzi/dev/slax/evpn-port-fix-awx.slax
+      dest: ./evpn-port-fix-awx.slax
