@@ -20,23 +20,23 @@
     juniper_junos_config:
        host: "{{ inventory_hostname }}"
        retrieve: "committed"
-       dest: "/root/config_backup/{{ junos_device }}/config"
+       dest: "/root/configuration_backup/{{ junos_device }}/config"
        username: root
        passwd: Gestalt7
   - name: Add file to git
     command: /usr/bin/git add "{{ junos_device }}/config"
     args:
-      chdir: /root/config_backup
+      chdir: /root/configuration_backup
 
   - name: Commit change
     command: /usr/bin/git commit -m "{{ mycomment }}"
     args:
-      chdir: /root/config_backup
+      chdir: /root/configuration_backup
 
   - name: Push config file
     command: /usr/bin/git push -u origin master
     args:
-      chdir: /root/config_backup
+      chdir: /root/configuration_backup
 
 
   - name: Print commit comment
