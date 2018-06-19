@@ -22,7 +22,7 @@
        retrieve: "committed"
        dest: "/root/configuration_backup/{{ junos_device }}/config"
        username: root
-       passwd: Gestalt7
+       passwd: password
   - name: Add file to git
     command: /usr/bin/git add "{{ junos_device }}/config"
     args:
