@@ -8,3 +8,7 @@
   tasks:
     - name: Gather Junos facts with no configuration
       juniper_junos_facts:
+      register: junos
+    - name: Show facts
+      debug: 
+        var: junos.facts
